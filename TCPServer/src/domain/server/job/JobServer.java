@@ -29,7 +29,7 @@ public abstract class JobServer extends RSA {
      * trả về socket tương ứng với từng user socket này sử dụng để gửi tin nhắn
      * tới user. nếu user này đang connection
      */
-    public Socket findSocket(String user) {
+    public SocketBase findSocket(String user) {
         return Common.User.lstSocket.get(user);
     }
 

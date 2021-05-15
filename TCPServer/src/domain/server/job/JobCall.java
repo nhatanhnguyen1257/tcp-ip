@@ -11,6 +11,7 @@ import com.server.rsa.RSA;
 import domain.Connection;
 import domain.Call;
 import domain.Packages;
+import domain.SocketBase;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -36,10 +37,12 @@ public class JobCall extends JobServer {
     @Override
     public void job() {
         if (this.objCall != null) {
-            Socket socket = Common.User.lstSocket.get(this.objCall.to);
-            if (socket != null && !socket.isClosed()) {
+//            System.out.println(String.valueOf("1")); 
+            SocketBase socket = Common.User.lstSocket.get(this.objCall.to);
+            System.out.println(String.valueOf(socket.getSocket().isClosed())); 
+            if (socket != null && !socket.getSocket().isClosed()) {
                 try {
-                    ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                   
                     Packages<Call> obj = new Packages<>();
                     Call call = new Call();
                     call.to = objCall.user;
@@ -49,13 +52,13 @@ public class JobCall extends JobServer {
                     obj.setStatus(Common.STATUS_SERVER.OK.ordinal());
                     obj.setAction(Common.STATUS_ACTION.CALL.ordinal());
                     
-                    oos.writeObject(RSA.encrpytion(objectToJson(obj)));
+                    socket.sendData(obj);
                     
                 } catch (IOException ex) {
                     Logger.getLogger(JobCall.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (Exception ex) {
                     Logger.getLogger(JobCall.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                } 
             }
 
         }

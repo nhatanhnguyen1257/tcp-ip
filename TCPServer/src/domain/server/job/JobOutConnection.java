@@ -8,9 +8,6 @@ package domain.server.job;
 import domain.Cancel;
 import com.server.common.Common;
 import domain.Packages;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -32,6 +29,6 @@ public class JobOutConnection extends JobServer {
     
     private void removeSocket(){
         if (cancels != null && cancels.user != null)
-            this.closeSocket(Common.User.lstSocket.get(cancels.user));
+            this.closeSocket(Common.User.lstSocket.get(cancels.user).getSocket());
     }
 }

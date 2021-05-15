@@ -72,11 +72,13 @@ public class TCPConnection<T> extends TCPClientServer<T> {
             // send file
             objectOutputStream = new ObjectOutputStream(TCPConnection.client.getOutputStream());
 //            obj.setObjectData(RSA.encrpytion(obj.getByteObject()));
-            objectOutputStream.writeObject(RSA.encrpytion(this.objectToJson(obj)));
+            objectOutputStream.writeObject(this.objectToJson(obj));
+//            objectOutputStream.writeObject(RSA.encrpytion(this.objectToJson(obj)));
 
             objectInputStream = new ObjectInputStream(TCPConnection.client.getInputStream());
 //            (Packages<Call>)jsonToObject(RSA.decryption(data));
-            Packages<?> dataServer = (Packages<?>) jsonToObject(RSA.decryption((String) objectInputStream.readObject()));
+//            Packages<?> dataServer = (Packages<?>) jsonToObject(RSA.decryption((String) objectInputStream.readObject()));
+            Packages<?> dataServer = (Packages<?>) jsonToObject((String) objectInputStream.readObject());
             status = dataServer.getStatus();
             if (status == Common.STATUS_SERVER.OK.ordinal()) {
                 views.changePanel();

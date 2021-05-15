@@ -10,6 +10,7 @@ import com.server.common.Common;
 import com.server.rsa.RSA;
 import domain.Connection;
 import domain.Packages;
+import domain.SocketBase;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -37,8 +38,12 @@ public class JobConnection extends JobServer {
     public void job() {
         if (this.connection != null && this.sockets != null) {
             if (this.hasUser(this.connection.getUser())) {
-                mesageOK();
-                addSocket();
+                try {
+                    mesageOK();
+                    addSocket();
+                } catch (IOException ex) {
+                    Logger.getLogger(JobConnection.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } else {
                 messageError();
             }
@@ -53,7 +58,8 @@ public class JobConnection extends JobServer {
             Packages<?> obj = new Packages<Object>();
             obj.setStatus(Common.STATUS_SERVER.OK.ordinal());
             obj.setAction(Common.STATUS_ACTION.LOGIN.ordinal());
-            oos.writeObject(RSA.encrpytion(objectToJson(obj)));
+            oos.writeObject(objectToJson(obj));
+//            oos.writeObject(RSA.encrpytion(objectToJson(obj)));
 //            oos.writeObject(obj);
         } catch (IOException ex) {
             Logger.getLogger(JobConnection.class.getName()).log(Level.SEVERE, null, ex);
@@ -64,14 +70,14 @@ public class JobConnection extends JobServer {
         }
     }
 
-    private void addSocket() {
-        Socket socket = Common.User.lstSocket.get(connection.getUser());
+    private void addSocket() throws IOException {
+        SocketBase socket = Common.User.lstSocket.get(connection.getUser());
         if (socket == null) {
-            Common.User.lstSocket.put(connection.getUser(), this.sockets);
-        } else if (!socket.isClosed()) {
+            Common.User.lstSocket.put(connection.getUser(), new SocketBase(this.sockets));
+        } else if (!socket.getSocket().isClosed()) {
             try {
-                socket.close();
-                Common.User.lstSocket.put(connection.getUser(), this.sockets);
+                socket.getSocket().close();
+                Common.User.lstSocket.put(connection.getUser(), new SocketBase(this.sockets));
             } catch (IOException ex) {
                 Logger.getLogger(JobConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -86,7 +92,8 @@ public class JobConnection extends JobServer {
             Packages<?> obj = new Packages<Object>();
             obj.setStatus(Common.STATUS_SERVER.LOGIN_FALSE.ordinal());
             obj.setAction(Common.STATUS_ACTION.LOGIN.ordinal());
-            oos.writeObject(RSA.encrpytion(objectToJson(obj)));
+            oos.writeObject(objectToJson(obj));
+//            oos.writeObject(RSA.encrpytion(objectToJson(obj)));
 //            oos.writeObject(obj);
         } catch (IOException ex) {
             Logger.getLogger(JobConnection.class.getName()).log(Level.SEVERE, null, ex);

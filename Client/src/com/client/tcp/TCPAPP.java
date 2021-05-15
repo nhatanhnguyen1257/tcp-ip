@@ -26,22 +26,27 @@ public class TCPAPP extends TCPClientServer implements Runnable {
     public void run() {
         ObjectInputStream ois = null;
         Audio audio = new Audio();
+         String data = "";
         while (true) {
             Packages<Call> packages = null;
             if (TCPConnection.client != null && !TCPConnection.client.isClosed()) {
                 try {
-                    ois = new ObjectInputStream(TCPConnection.client.getInputStream());
-                    String data = (String) ois.readObject();
-                    packages = (Packages<Call>) jsonToObject(RSA.decryption(data));
+                    if (ois == null){
+                       ois = new ObjectInputStream(TCPConnection.client.getInputStream()); 
+                    }
+//                    
+//                   data = (String) ois.readObject();
+//                    packages = (Packages<Call>) jsonToObject(RSA.decryption(data));
+                    packages = (Packages<Call>) jsonToObject(String.valueOf(ois.readObject()));
 
                     byte[] json = objectToByte(packages.getData());
                     Call call = (Call) byetToObject(json, new Call());
 
                     audio.playAudio(call.data);
                 } catch (IOException ex) {
-                    Logger.getLogger(TCPAPP.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TCPAPP.class.getName()).log(Level.SEVERE, null, ex );
                 } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(TCPAPP.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TCPAPP.class.getName()).log(Level.SEVERE, null, ex );
                 } catch (Exception ex) {
                     Logger.getLogger(TCPAPP.class.getName()).log(Level.SEVERE, null, ex);
                 }
