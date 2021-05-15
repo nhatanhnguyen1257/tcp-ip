@@ -60,7 +60,9 @@ public class TCPCall extends TCPClientServer {
         try {
 
             objectOutputStream = new ObjectOutputStream(client.getOutputStream());
-            objectOutputStream.writeObject(RSA.encrpytion(this.objectToJson(obj)));
+            objectOutputStream.writeObject(this.objectToJson(obj));
+
+//            objectOutputStream.writeObject(RSA.encrpytion(this.objectToJson(obj)));
             System.out.println("send ok");
             
             //objectInputStream = new ObjectInputStream(client.getInputStream());

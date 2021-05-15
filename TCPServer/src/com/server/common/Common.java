@@ -5,7 +5,7 @@
  */
 package com.server.common;
 
-import domain.Connection;
+import domain.SocketBase;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,7 +43,7 @@ public class Common{
         public static Set<String> lstUserName = new HashSet<String>();
 
         /** chứa danh sách kết nối được tạo khi người sử dụng thực hiện kết nối*/
-        public static HashMap<String, Socket> lstSocket = new HashMap<>();
+        public static HashMap<String, SocketBase> lstSocket = new HashMap<>();
 
         public static void createListSocket() {
             for (String user : lstUserName) {

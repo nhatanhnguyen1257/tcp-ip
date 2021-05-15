@@ -19,27 +19,23 @@ public class GroupThreadCall {
     private static int indexDeque = 0;
     private static int indexDequeMax;
     private static final int numberCore = 2;
-    private static ThreadGroup threadGroup = new ThreadGroup("Group thread work call");
-    private static Deque<JobCall>[] lstJobCall;
+    public static Deque<JobCall>[] lstJobCall;
 
     public static void initThreadWork() {
         lstJobCall = new ArrayDeque[numberCore * 2 - 2];
         indexDequeMax = numberCore * 2 - 2;
         for (int i = 0; i < numberCore * 2 - 2; ++i) {
             lstJobCall[i] = new ArrayDeque<>();
-            ThreadCall th =  new ThreadCall();
-            th.setListData(lstJobCall[i]);
-            Thread thread = new Thread(threadGroup, th, String.valueOf(i));
-            thread.start();
+            new Thread(new ThreadCall(i)).start();
         }
     }
     
-    public static void setData(JobCall jobCall) {
+    public synchronized static void setData(JobCall jobCall) {
         if (jobCall != null){
             GroupThreadCall.lstJobCall[indexDeque].add(jobCall);
             indexDeque += 1 ;
         }
-        
+//        System.err.println(indexDeque);
         if (indexDeque >= indexDequeMax) {
             indexDeque = 0;
         }

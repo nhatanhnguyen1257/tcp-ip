@@ -113,17 +113,17 @@ public final class TCPServer extends RSA implements ITCPServer {
                 // accept connect from client and create Socket object
                 server = serverSocket.accept();
 
-                System.out.println("connected to " + server.getRemoteSocketAddress());
+//                System.out.println("connected to " + server.getRemoteSocketAddress());
                 // get greeting from client
 //                dataFromClient = new DataInputStream(server.getInputStream());
 //                System.out.println(dataFromClient.readUTF());
                 // receive file info
                 objectInput = new ObjectInputStream(server.getInputStream());
                 String data = (String) objectInput.readObject();
-                System.out.println(RSA.decryption(data));
-                Packages<?> packageClient = jsonToObject(RSA.decryption(data), new Object());
+//                System.out.println(RSA.decryption(data));
+                Packages<?> packageClient = jsonToObject(data, new Object());
+//                  Packages<?> packageClient = jsonToObject(RSA.decryption(data), new Object());
                 action(packageClient.getAction(), packageClient, server);
-                
                 
                 if (packageClient.getAction() != Common.STATUS_ACTION.LOGIN.ordinal()) {
                     closeStream(objectInput);
@@ -170,7 +170,7 @@ public final class TCPServer extends RSA implements ITCPServer {
     /**
      * các hành động client mong muốn
      */
-    private void action(int action, Packages<?> packages, Socket socket) 
+    private synchronized void action(int action, Packages<?> packages, Socket socket) 
                     throws JsonProcessingException, IOException {
         
         if (action == Common.STATUS_ACTION.LOGIN.ordinal()) {
