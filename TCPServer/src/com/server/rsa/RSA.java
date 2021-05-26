@@ -66,15 +66,14 @@ public class RSA {
             }
         }
     }
-
-    /**
+ /**
      * method giải mã dữ liệu được mã hóa
      *
      * @param data : dữ liệu json object được mã hóa
      * @return dữ liệu json của object
      * @throws Exception
      */
-    protected final static String decryption(String data) throws Exception {
+    protected final byte[] decryption(byte[] data) throws Exception {
         try {
             // Đọc file chứa private key
 //            FileInputStream fis = new FileInputStream(RSA.class.getResource("/res/privateKey.rsa").getPath());
@@ -90,7 +89,7 @@ public class RSA {
             // Giải mã dữ liệu
             Cipher c = Cipher.getInstance("RSA");
             c.init(Cipher.DECRYPT_MODE, priKey);
-            return new String(c.doFinal(Base64.getDecoder().decode(data)));
+            return c.doFinal(data);
         } catch (Exception ex) {
             throw ex;
         }
@@ -103,7 +102,7 @@ public class RSA {
      * @return dữ liệu object dưới dạng json được mã hóa
      * @throws Exception
      */
-    protected final static String encrpytion(String input) throws Exception {
+    protected final byte[] encrpytion(byte[] input) throws Exception {
         try {
             // Đọc file chứa public key
 //            FileInputStream fis = new FileInputStream(RSA.class.getResource("/res/publicKey.rsa").getPath());
@@ -119,7 +118,7 @@ public class RSA {
             // Mã hoá dữ liệu
             Cipher c = Cipher.getInstance("RSA");
             c.init(Cipher.ENCRYPT_MODE, pubKey);
-            return Base64.getEncoder().encodeToString(c.doFinal(input.getBytes()));
+            return c.doFinal(input);
         } catch (Exception ex) {
             throw ex;
         }

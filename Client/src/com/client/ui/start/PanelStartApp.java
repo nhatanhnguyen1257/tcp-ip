@@ -8,16 +8,14 @@ package com.client.ui.start;
 import com.client.ui.home.PanelCall;
 import com.client.ui.main.Main;
 import domain.Connection;
-import java.awt.GridLayout;
-import javax.swing.JFrame;
 
 /**
  *
  * @author ngao
  */
-public class PanelStartApp extends javax.swing.JPanel implements ISettingAppContract.View{
+public class PanelStartApp extends javax.swing.JPanel implements IStartAppContract.View{
 
-    private ISettingAppContract.Presenter settingPresenter;
+    private IStartAppContract.Presenter settingPresenter;
     private Main appMain;
     
     /**
@@ -151,7 +149,7 @@ public class PanelStartApp extends javax.swing.JPanel implements ISettingAppCont
 
     @Override
     public void init() {
-        settingPresenter = new SettingPresenter();
+        settingPresenter = new StartPresenter();
         settingPresenter.setView(this);
     }
 

@@ -13,7 +13,7 @@ import com.client.common.IPresenterBase;
  *
  * @author ngao
  */
-public interface ISettingAppContract {
+public interface IStartAppContract {
     
     public interface View extends IViewBase {
         
@@ -23,7 +23,7 @@ public interface ISettingAppContract {
     }
     
     
-    public interface Presenter extends IPresenterBase<ISettingAppContract.View> {
+    public interface Presenter extends IPresenterBase<IStartAppContract.View> {
         
         public void connection(Connection setting);
     }

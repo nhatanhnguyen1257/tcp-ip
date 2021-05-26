@@ -15,7 +15,8 @@ import java.util.logging.Logger;
 import javax.crypto.Cipher;
 
 public class RSA {
-private static byte[] key_private;
+
+    private static byte[] key_private;
     private static byte[] key_public;
 
     {
@@ -73,7 +74,7 @@ private static byte[] key_private;
      * @return dữ liệu json của object
      * @throws Exception
      */
-    protected final static String decryption(String data) throws Exception {
+    protected final byte[] decryption(byte[] data) throws Exception {
         try {
             // Đọc file chứa private key
 //            FileInputStream fis = new FileInputStream(RSA.class.getResource("/res/privateKey.rsa").getPath());
@@ -89,7 +90,7 @@ private static byte[] key_private;
             // Giải mã dữ liệu
             Cipher c = Cipher.getInstance("RSA");
             c.init(Cipher.DECRYPT_MODE, priKey);
-            return new String(c.doFinal(Base64.getDecoder().decode(data)));
+            return c.doFinal(data);
         } catch (Exception ex) {
             throw ex;
         }
@@ -102,7 +103,7 @@ private static byte[] key_private;
      * @return dữ liệu object dưới dạng json được mã hóa
      * @throws Exception
      */
-    protected final static String encrpytion(String input) throws Exception {
+    protected final byte[] encrpytion(byte[] input) throws Exception {
         try {
             // Đọc file chứa public key
 //            FileInputStream fis = new FileInputStream(RSA.class.getResource("/res/publicKey.rsa").getPath());
@@ -118,7 +119,8 @@ private static byte[] key_private;
             // Mã hoá dữ liệu
             Cipher c = Cipher.getInstance("RSA");
             c.init(Cipher.ENCRYPT_MODE, pubKey);
-            return Base64.getEncoder().encodeToString(c.doFinal(input.getBytes()));
+            
+            return c.doFinal(input);
         } catch (Exception ex) {
             throw ex;
         }

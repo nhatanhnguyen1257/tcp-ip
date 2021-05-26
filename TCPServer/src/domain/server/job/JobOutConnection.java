@@ -31,4 +31,14 @@ public class JobOutConnection extends JobServer {
         if (cancels != null && cancels.user != null)
             this.closeSocket(Common.User.lstSocket.get(cancels.user).getSocket());
     }
+
+    @Override
+    public byte[] createDataSend(Packages obj) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Packages readByteResponse(byte[] data) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

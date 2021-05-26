@@ -6,7 +6,6 @@
 package com.client.tcp;
 
 import com.client.common.Common;
-import com.client.rsa.RSA;
 import domain.Packages;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -94,6 +93,16 @@ public class TCPLockConnection<T> extends TCPClientServer<T> {
             Logger.getLogger(TCPLockConnection.class.getName()).log(Level.SEVERE, null, ex);
             views.showMeg("một lỗi không xác định.");
         }
+    }
+
+    @Override
+    public byte[] createDataSend(Packages<T> obj) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Packages<T> readByteResponse(byte[] data) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

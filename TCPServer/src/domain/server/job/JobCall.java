@@ -5,16 +5,12 @@
  */
 package domain.server.job;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.server.common.Common;
-import com.server.rsa.RSA;
-import domain.Connection;
 import domain.Call;
+import domain.Data;
 import domain.Packages;
 import domain.SocketBase;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,15 +19,12 @@ import java.util.logging.Logger;
  *
  * @author ngao
  */
-public class JobCall extends JobServer {
+public class JobCall<Connection> extends JobServer {
 
     private Call objCall;
 
-    public JobCall(Packages<Call> packages)
-            throws JsonProcessingException, IOException {
-
-        byte[] json = objectToJson(packages.getData()).getBytes();
-        this.objCall = objectToByte(json, new Call());
+    public JobCall(byte[] data) {
+        this.objCall = new Call().readDataSend(data).getData();
     }
 
     @Override
@@ -39,10 +32,9 @@ public class JobCall extends JobServer {
         if (this.objCall != null) {
 //            System.out.println(String.valueOf("1")); 
             SocketBase socket = Common.User.lstSocket.get(this.objCall.to);
-            System.out.println(String.valueOf(socket.getSocket().isClosed())); 
-            if (socket != null && !socket.getSocket().isClosed()) {
+            if (socket != null && socket.getSocket() != null && !socket.getSocket().isClosed()) {
                 try {
-                   
+
                     Packages<Call> obj = new Packages<>();
                     Call call = new Call();
                     call.to = objCall.user;
@@ -51,14 +43,41 @@ public class JobCall extends JobServer {
                     obj.setData(call);
                     obj.setStatus(Common.STATUS_SERVER.OK.ordinal());
                     obj.setAction(Common.STATUS_ACTION.CALL.ordinal());
-                    
-                    socket.sendData(obj);
-                    
+
+                    Data data = new Data();
+                    data.data = encrpytion(obj.getData().getDataSend(Common.STATUS_SERVER.OK.ordinal()));
+                    socket.sendData(data);
+
+                    obj = null;
+                    data = null;
                 } catch (IOException ex) {
                     Logger.getLogger(JobCall.class.getName()).log(Level.SEVERE, null, ex);
+//                    try {
+//                        Data data = new Data();
+//                        data.data = new Call().getDataSend(Common.STATUS_SERVER.ERROR.ordinal());
+//                        socket.sendData(data);
+//                        data = null;
+//                    } catch (Exception ex1) {
+//                        Logger.getLogger(JobCall.class.getName()).log(Level.SEVERE, null, ex1);
+//                    }
                 } catch (Exception ex) {
                     Logger.getLogger(JobCall.class.getName()).log(Level.SEVERE, null, ex);
-                } 
+//                    try {
+//                        Data data = new Data();
+//                        data.data = new Call().getDataSend(Common.STATUS_SERVER.ERROR.ordinal());
+//                        socket.sendData(data);
+//                        data = null;
+//                    } catch (Exception ex1) {
+//                        Logger.getLogger(JobCall.class.getName()).log(Level.SEVERE, null, ex1);
+//                    }
+                } finally{
+                    try {
+                        if (socket != null)
+                            socket.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(JobCall.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
 
         }
@@ -84,6 +103,16 @@ public class JobCall extends JobServer {
      */
     private boolean isUserOnline() {
         return Common.User.lstSocket.get(this.objCall.to) != null ? true : false;
+    }
+
+    @Override
+    public byte[] createDataSend(Packages obj) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Packages readByteResponse(byte[] data) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -10,4 +10,10 @@
   - IDE sử dụng cho phát triển là netbean
   - mã khóa ở đây tôi dùng là RSA- 1024bit.
 
-- để chạy được project trên thì bạn cần thêm tất cả các file jar tại thư mục lib vào project.
+- dữ liệu được gửi đi là object (Data - class: Data).
+- Trong object này chứa data sử dụng chao đổi là 117 byte. Do RSA 1024 bít, nên số byte tối đa 1 lần mã hóa là 117 byte.
+- cấu trúc dữ liệu gửi đi.
+
+  + byte số 1: chứa action tức là loại hành động muốn server thực hiện.
+  + byte số 2: chứa trạng thái của server trả về cho client.
+  + số byte còn lại chứa dữ liệu thông tin gửi cho server.

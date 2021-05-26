@@ -6,8 +6,6 @@
 package com.client.tcp;
 
 import com.client.rsa.RSA;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import domain.Packages;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +21,10 @@ public abstract class TCPClientServer<T> extends RSA implements Runnable {
     public abstract void connect() throws Exception;
 
     public abstract void request(Packages<T> obj) throws Exception;
+    
+    public abstract byte[] createDataSend(Packages<T> obj) throws Exception;
+    
+    public abstract Packages<T> readByteResponse(byte[] data) throws Exception;
 
     /**
      * close socket
@@ -64,43 +66,5 @@ public abstract class TCPClientServer<T> extends RSA implements Runnable {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-    }
-
-    /**
-     * thực hiện chuyển từ object sang json
-     * @param packages
-     * @return 
-     */
-    protected String objectToJson(Packages<T> packages) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(packages);
-    }
-    
-    
-        /**
-     * thực hiện chuyển từ json sang Object
-     * @param packages
-     * @return 
-     */
-    protected Packages<T> jsonToObject(String json) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, Packages.class);
-    }
-
-    
-    /**
-     * chuyển từ object về byte
-     */
-    protected byte[] objectToByte(Object object) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsBytes(object);
-    }
-    
-        /**
-     * chuyển từ byte về object
-     */
-    protected <T> T byetToObject(byte []object, T t) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(object, (Class<T>) t.getClass());
-    }
+    }    
 }

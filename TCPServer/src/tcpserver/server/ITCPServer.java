@@ -5,9 +5,6 @@
  */
 package tcpserver.server;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
 
 /**
  *
@@ -15,8 +12,5 @@ import java.net.Socket;
  */
 public interface ITCPServer extends Runnable {
     
-    public void open();
-    public void closeSocket(Socket socket);
-    public void closeStream(InputStream inputStream);
-    public void closeStream(OutputStream outputStream);
+    public void open() throws Exception;
 }

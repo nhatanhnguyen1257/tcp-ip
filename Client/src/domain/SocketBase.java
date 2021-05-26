@@ -5,7 +5,8 @@
  */
 package domain;
 
-import com.server.rsa.RSA;
+import com.client.rsa.RSA;
+import com.client.tcp.TCPConnection;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -53,23 +54,23 @@ public class SocketBase extends RSA {
 
         if (this.outSocket != null) {
             this.outSocket.writeObject(data);
+//             this.outSocket.writeObject(RSA.encrpytion(objectToJson(data)));
         }
     }
 
     /**
      * sử dụng để gửi dữ liệu trao đổi server và client
-     * dữ liệu sau khi đọc thì đã được giải mã
      *
      * @param data
      * @return 
      * @throws java.io.IOException
      * @throws java.lang.ClassNotFoundException
      */
-    public synchronized Data readData() throws IOException, ClassNotFoundException, Exception {
+    public Data readData() throws IOException, ClassNotFoundException, Exception {
         if (this.inputStream != null ) {
-            Data d = (Data) this.inputStream.readObject();
-            d.data = this.decryption(d.data);
-            return d;
+            Data data =  (Data) this.inputStream.readObject();
+            data.data = decryption(data.data);
+            return data;
         } 
         throw new Exception();
     }
@@ -81,7 +82,6 @@ public class SocketBase extends RSA {
     public void getSocket(Socket sockets) {
         socket = sockets;
     }
-
     
     public void close() throws IOException {
         if (this.outSocket != null) {
@@ -96,4 +96,5 @@ public class SocketBase extends RSA {
             this.socket.close();
         }
     }
+
 }

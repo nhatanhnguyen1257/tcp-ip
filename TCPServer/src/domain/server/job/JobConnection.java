@@ -5,15 +5,12 @@
  */
 package domain.server.job;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.server.common.Common;
-import com.server.rsa.RSA;
 import domain.Connection;
+import domain.Data;
 import domain.Packages;
 import domain.SocketBase;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,16 +18,13 @@ import java.util.logging.Logger;
  *
  * @author ngao
  */
-public class JobConnection extends JobServer {
+public class JobConnection extends JobServer<Connection> {
 
     private Connection connection;
-    private Socket sockets;
+    private SocketBase sockets;
 
-    public JobConnection(Packages<Connection> packages, Socket socket)
-            throws JsonProcessingException, IOException {
-
-        byte[] json = objectToJson(packages.getData()).getBytes();
-        connection = objectToByte(json, new Connection());
+    public JobConnection(byte[] data, SocketBase socket) {
+        connection = new Connection().readDataSend(data).getData();
         sockets = socket;
     }
 
@@ -43,66 +37,84 @@ public class JobConnection extends JobServer {
                     addSocket();
                 } catch (IOException ex) {
                     Logger.getLogger(JobConnection.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(JobConnection.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-                messageError();
+                try {
+                    messageError();
+                } catch (Exception ex) {
+                    Logger.getLogger(JobConnection.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
 
-    private void mesageOK() {
-        // confirm that file is received
-        ObjectOutputStream oos = null;
+    private void mesageOK() throws Exception {
+        Packages<Connection> obj = new Packages<Connection>();
+        obj.setData(connection);
+        obj.setStatus(Common.STATUS_SERVER.OK.ordinal());
+        obj.setAction(Common.STATUS_ACTION.LOGIN.ordinal());
+        Data data = new Data();
         try {
-            oos = new ObjectOutputStream(this.sockets.getOutputStream());
-            Packages<?> obj = new Packages<Object>();
-            obj.setStatus(Common.STATUS_SERVER.OK.ordinal());
-            obj.setAction(Common.STATUS_ACTION.LOGIN.ordinal());
-            oos.writeObject(objectToJson(obj));
-//            oos.writeObject(RSA.encrpytion(objectToJson(obj)));
-//            oos.writeObject(obj);
-        } catch (IOException ex) {
-            Logger.getLogger(JobConnection.class.getName()).log(Level.SEVERE, null, ex);
-            this.closeStream(oos);
-            this.closeSocket(sockets);
+            data.data = this.encrpytion(obj.getData().getDataSend(obj.getStatus()));
+            this.sockets.sendData(data);
+            return;
+            //oos.write(this.encrpytion(obj.getData().getDataSend(Common.STATUS_SERVER.OK.ordinal())));
         } catch (Exception ex) {
             Logger.getLogger(JobConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
+        data.data = this.encrpytion(obj.getData().getDataSend(obj.getStatus()));
+        this.sockets.sendData(data);
+        this.sockets.close();
     }
 
     private void addSocket() throws IOException {
         SocketBase socket = Common.User.lstSocket.get(connection.getUser());
         if (socket == null) {
-            Common.User.lstSocket.put(connection.getUser(), new SocketBase(this.sockets));
+            Common.User.lstSocket.put(connection.getUser(), this.sockets);
         } else if (!socket.getSocket().isClosed()) {
             try {
                 socket.getSocket().close();
-                Common.User.lstSocket.put(connection.getUser(), new SocketBase(this.sockets));
+                Common.User.lstSocket.put(connection.getUser(), this.sockets);
             } catch (IOException ex) {
                 Logger.getLogger(JobConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
-    private void messageError() {
-// confirm that file is received
-        ObjectOutputStream oos = null;
+    private void messageError() throws Exception {
+
+        Packages<Connection> obj = new Packages<>();
+        obj.setData(connection);
+        obj.setStatus(Common.STATUS_SERVER.LOGIN_FALSE.ordinal());
+        obj.setAction(Common.STATUS_ACTION.LOGIN.ordinal());
+        Data data = new Data();
         try {
-            oos = new ObjectOutputStream(this.sockets.getOutputStream());
-            Packages<?> obj = new Packages<Object>();
-            obj.setStatus(Common.STATUS_SERVER.LOGIN_FALSE.ordinal());
-            obj.setAction(Common.STATUS_ACTION.LOGIN.ordinal());
-            oos.writeObject(objectToJson(obj));
-//            oos.writeObject(RSA.encrpytion(objectToJson(obj)));
-//            oos.writeObject(obj);
+            data.data = this.encrpytion(obj.getData().getDataSend(obj.getStatus()));
+            this.sockets.sendData(data);
+
         } catch (IOException ex) {
             Logger.getLogger(JobConnection.class.getName()).log(Level.SEVERE, null, ex);
+            data.data = this.encrpytion(obj.getData().getDataSend(obj.getStatus()));
+            this.sockets.sendData(data);
         } catch (Exception ex) {
             Logger.getLogger(JobConnection.class.getName()).log(Level.SEVERE, null, ex);
+            data.data = this.encrpytion(obj.getData().getDataSend(obj.getStatus()));
+            this.sockets.sendData(data);
         } finally {
-            this.closeStream(oos);
-            this.closeSocket(sockets);
+            this.sockets.close();
         }
+    }
+
+    @Override
+    public byte[] createDataSend(Packages<Connection> obj) throws Exception {
+        return this.encrpytion(obj.getData().getDataSend(obj.getStatus()));
+    }
+
+    @Override
+    public Packages<Connection> readByteResponse(byte[] data) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

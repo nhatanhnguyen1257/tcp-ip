@@ -7,21 +7,18 @@ package com.client.ui.start;
 
 import com.client.common.Common;
 import domain.Connection;
-import com.client.tcp.TCPClientServer;
-import com.client.tcp.TCPClientServer;
 import com.client.tcp.TCPConnection;
-import com.client.ui.home.PanelCall;
 import domain.Packages;
 
 /**
  *
  * @author ngao
  */
-public class SettingPresenter implements ISettingAppContract.Presenter {
+public class StartPresenter implements IStartAppContract.Presenter {
 
-    private ISettingAppContract.View views;
+    private IStartAppContract.View views;
 
-    public SettingPresenter() {
+    public StartPresenter() {
         
     }
 
@@ -44,7 +41,7 @@ public class SettingPresenter implements ISettingAppContract.Presenter {
     }
 
     @Override
-    public void setView(ISettingAppContract.View view) {
+    public void setView(IStartAppContract.View view) {
         this.views = view;
     }
 

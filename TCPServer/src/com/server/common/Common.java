@@ -6,7 +6,6 @@
 package com.server.common;
 
 import domain.SocketBase;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -60,12 +59,12 @@ public class Common{
         public static HashMap<String, String> lockConnection = new HashMap<>();
 
         public static void createUser() {
-            lstUserName.add("1");
-            lstUserName.add("2");
-            lstUserName.add("3");
-            lstUserName.add("4");
-            lstUserName.add("5");
-            lstUserName.add("6");
+            lstUserName.add("1111111111");
+            lstUserName.add("2222222222");
+            lstUserName.add("3333333333");
+            lstUserName.add("4444444444");
+            lstUserName.add("5555555555");
+            lstUserName.add("6666666666");
         }
     }
 

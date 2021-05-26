@@ -8,6 +8,8 @@ package tcpserver;
 import com.server.common.Common;
 import com.server.work.GroupThreadCall;
 import com.server.work.ThreadConnection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import tcpserver.server.TCPServer;
 import tcpserver.server.ITCPServer;
 
@@ -16,16 +18,23 @@ import tcpserver.server.ITCPServer;
  * @author ngao
  */
 public class TCPAppMain {
-    
+
     public static void main(String[] args) {
         Common.User.createUser();
         Common.User.createListSocket();
-        
+
         GroupThreadCall.initThreadWork();
         new Thread(new ThreadConnection()).start();
-        
-        ITCPServer serverTCP = new TCPServer();
-        Thread thread = new Thread(serverTCP);
-        thread.start();
+
+        ITCPServer serverTCP;
+        try {
+            serverTCP = new TCPServer();
+            Thread thread = new Thread(serverTCP);
+            thread.start();
+        } catch (Exception ex) {
+            Logger.getLogger(TCPAppMain.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(0);
+        }
+
     }
 }

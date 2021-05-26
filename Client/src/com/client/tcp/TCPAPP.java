@@ -6,12 +6,9 @@
 package com.client.tcp;
 
 import com.client.audio.Audio;
-import com.client.rsa.RSA;
 import domain.Call;
+import domain.Data;
 import domain.Packages;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,30 +21,15 @@ public class TCPAPP extends TCPClientServer implements Runnable {
 
     @Override
     public void run() {
-        ObjectInputStream ois = null;
         Audio audio = new Audio();
-         String data = "";
         while (true) {
-            Packages<Call> packages = null;
-            if (TCPConnection.client != null && !TCPConnection.client.isClosed()) {
+            if (TCPConnection.client != null && !TCPConnection.client.getSocket().isClosed()) {
                 try {
-                    if (ois == null){
-                       ois = new ObjectInputStream(TCPConnection.client.getInputStream()); 
-                    }
-//                    
-//                   data = (String) ois.readObject();
-//                    packages = (Packages<Call>) jsonToObject(RSA.decryption(data));
-                    packages = (Packages<Call>) jsonToObject(String.valueOf(ois.readObject()));
-
-                    byte[] json = objectToByte(packages.getData());
-                    Call call = (Call) byetToObject(json, new Call());
-
-                    audio.playAudio(call.data);
-                } catch (IOException ex) {
-                    Logger.getLogger(TCPAPP.class.getName()).log(Level.SEVERE, null, ex );
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(TCPAPP.class.getName()).log(Level.SEVERE, null, ex );
-                } catch (Exception ex) {
+                    Thread.sleep(10);
+                    Data data = TCPConnection.client.readData();
+                    
+                    audio.playAudio(new Call().readDataSend(data.data).getData().data);
+                }catch (Exception ex) {
                     Logger.getLogger(TCPAPP.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -61,6 +43,16 @@ public class TCPAPP extends TCPClientServer implements Runnable {
 
     @Override
     public void request(Packages obj) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public byte[] createDataSend(Packages obj) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Packages readByteResponse(byte[] data) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

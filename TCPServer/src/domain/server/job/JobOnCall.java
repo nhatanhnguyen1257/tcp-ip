@@ -5,6 +5,8 @@
  */
 package domain.server.job;
 
+import domain.Packages;
+
 /**
  *
  * @author ngao
@@ -13,6 +15,16 @@ public class JobOnCall extends JobServer{
 
     @Override
     public void job() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public byte[] createDataSend(Packages obj) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Packages readByteResponse(byte[] data) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
